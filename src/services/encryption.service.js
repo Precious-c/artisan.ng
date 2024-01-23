@@ -14,12 +14,13 @@ const bcrypt = require("bcrypt");
 // }
 
 async function encrypt(password) {
-  const encrypted = await bcrypt.hash(password, 10);
+  const salt = bcrypt.genSaltSync(12);
+  const encrypted = await bcrypt.hash(password, salt);
   return encrypted;
 }
 
 async function comparePassword(plainPassword, encryptedPassword) {
-  const verified = await bcrypt.compare(plainPassword, encryptedPasswordPassword);
+  const verified = await bcrypt.compare(plainPassword, encryptedPassword);
   return verified;
 }
 

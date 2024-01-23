@@ -21,14 +21,16 @@ const userSchema = new mongoose.Schema(
     address: {
       type: String,
     },
-    // createdAt: {
-    //   type: Date,
-    // },
+    registration_date: { type: Date, default: Date.now },
     role: {
       type: String,
       required: true,
-      default: Role.USER,
+      default: "user",
+      enum: ["user", "service_provider"],
     },
+    // serviceHistory{
+
+    // }
     profileImageUrl: {
       type: String,
     },
