@@ -26,13 +26,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       default: "user",
-      enum: ["user", "service_provider"],
+      enum: ["user", "service_provider", "admin"],
     },
     // serviceHistory{
 
-    // }
+    // },
     profileImageUrl: {
       type: String,
+      default: "",
     },
     password: {
       type: String,

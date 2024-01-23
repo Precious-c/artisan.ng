@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const userService = require("../services/user.Service");
 
+// get a users details
 async function getProfile(req, res) {
   try {
     const userId = req.userId;
@@ -14,6 +15,46 @@ async function getProfile(req, res) {
   }
 }
 
+// returns all users based on the speciied role. if role is not defined, returns all users
+async function getUsers(req, res) {
+  try {
+    const role = req.params.role;
+    const users = await userService.getUsers(role);
+    if (!users) return res.status(404).json({ success: false, msg: "No users found" });
+    const modifiedUsers = [];
+    users.forEach((user) => {
+      const {
+        id,
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        role,
+        registration_date,
+        updatedAt,
+        profileImageUrl,
+      } = user;
+      let newuser = {
+        id,
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        role,
+        registration_date,
+        updatedAt,
+        profileImageUrl,
+      };
+      modifiedUsers.push(newuser);
+    });
+    return res.json({ success: true, users: modifiedUsers, noOfUsers: modifiedUsers.length });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, msg: err.message });
+  }
+}
+
+// Allow user update their profile
 async function updateProfile(req, res) {
   try {
     const errors = validationResult(req);
@@ -34,6 +75,7 @@ async function updateProfile(req, res) {
   }
 }
 
+// allow a user reset their password when they are logged in
 async function resetPassword(req, res) {
   try {
     const errors = validationResult(req);
@@ -49,6 +91,7 @@ async function resetPassword(req, res) {
   }
 }
 
+// send password reset link to a users email
 async function forgotPassword(req, res) {
   try {
     const email = req.body.email;
@@ -62,6 +105,7 @@ async function forgotPassword(req, res) {
   }
 }
 
+// allow a user reset password using the link sent to their email
 async function resetForgotPassword(req, res) {
   try {
     const errors = validationResult(req);
@@ -79,4 +123,28 @@ async function resetForgotPassword(req, res) {
   }
 }
 
-module.exports = { getProfile, updateProfile, resetPassword, forgotPassword, resetForgotPassword };
+async function searchUsers(req, res) {
+  try {
+    let searchParams = req.params.searchParam.toLowerCase().trim().split(" ");
+    console.log(searchParams);
+    const searchResults = await userService.searchUsers(searchParams);
+    if (!searchResults || searchResults.length === 0)
+      return res.status(404).json({ success: false, msg: "No user found" });
+    return res.json({ success: true, result: searchResults, noOfResult: searchResults.length });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, msg: err.message });
+  }
+}
+
+// delete a users accound
+
+module.exports = {
+  getProfile,
+  updateProfile,
+  resetPassword,
+  forgotPassword,
+  resetForgotPassword,
+  getUsers,
+  searchUsers,
+};

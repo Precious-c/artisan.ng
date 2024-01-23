@@ -8,6 +8,15 @@ async function getUser(userId) {
   return await User.findById(userId);
 }
 
+//returns all users
+async function getUsers(role = "") {
+  console.log(role);
+  if (role === "user") return await User.find({ role });
+  if (role === "service_provider") return await User.find({ role });
+  if (role === "admin") return await User.find({ role });
+  if (role === "") return await User.find();
+}
+
 async function updateProfile(userId, reqBody) {
   try {
     const user = await User.findByIdAndUpdate(
@@ -83,4 +92,28 @@ async function resetForgotPassword(userId, token, newPassword) {
   }
 }
 
-module.exports = { getUser, updateProfile, resetPassword, forgotPassword, resetForgotPassword };
+async function searchUsers(searchParams) {
+  try {
+    const users = await getUsers();
+    const searchResults = [];
+    users.forEach((user) => {
+      searchParams.forEach((param) => {
+        if (param === user.firstName || param === user.lastName) searchResults.push(user);
+      });
+    });
+    return searchResults;
+  } catch (err) {
+    throw err;
+  }
+}
+searchUsers;
+
+module.exports = {
+  getUser,
+  updateProfile,
+  resetPassword,
+  forgotPassword,
+  resetForgotPassword,
+  getUsers,
+  searchUsers,
+};
