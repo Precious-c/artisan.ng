@@ -8,6 +8,7 @@ function auth(req, res, next) {
     const user = jwt.verify(token, process.env.JWT_SECRET);
     if (!user) return res.status(401).send({ message: "Unauthorized, access denied!" });
     req.userId = user.userID;
+    req.role = user.role;
     // req.token = token;
     next();
   } catch (err) {

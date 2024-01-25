@@ -27,6 +27,19 @@ const createAccountValidation = [
     .trim()
     .escape(),
   body("address").optional().isString().withMessage("Address is empty").trim(),
+  body("businessName")
+    .optional()
+    .isString()
+    .isLength({ min: 3, max: 20 })
+    .withMessage("Business name must be a string with length 3 to 20 characters")
+    .trim()
+    .escape(),
+  body("businessDescription")
+    .optional()
+    .isString()
+    .withMessage("Business description must be a string with length 3 to 10 characters")
+    .trim()
+    .escape(),
 ];
 
 const loginValidation = [

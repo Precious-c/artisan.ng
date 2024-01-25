@@ -19,5 +19,3 @@ function convertToLowercase(req, res, next) {
 }
 
 module.exports = { convertToLowercase };
-
-module.exports = { convertToLowercase };

@@ -7,11 +7,11 @@ const connectDB = require("./src/config/database");
 // const { createAndSaveUsers } = require("./seeds");
 const authRoutes = require("./src/routes/authRoutes");
 const userRoutes = require("./src/routes/user.Routes");
+const serviceProviderRoutes = require("./src/routes/serviceProvider.Routes");
 const app = express();
 
 connectDB();
-
-// createAndSaveUsers(10);
+// createAndSaveUsers(5);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,5 +20,6 @@ app.use(logger("dev"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/service-provider", serviceProviderRoutes);
 
 app.listen(process.env.PORT, () => console.log(`Server is running on port ${process.env.PORT}`));

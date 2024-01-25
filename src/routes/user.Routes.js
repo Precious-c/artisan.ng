@@ -7,17 +7,11 @@ const {
   changePasswordValidation,
 } = require("../utils/validations/userValidation");
 const { admin } = require("../middlewares/ensureRole");
-const { convertToLowercase } = require("../middlewares/stringToLowercase");
+// const { convertToLowercase } = require("../middlewares/stringToLowercase");
 
-router.get("/get/:role?", auth, admin, convertToLowercase, userController.getUsers);
+router.get("/get/:role?", auth, admin, userController.getUsers);
 router.get("/profile", auth, userController.getProfile);
-router.put(
-  "/profile",
-  auth,
-  updateProfileValidation,
-  convertToLowercase,
-  userController.updateProfile
-);
+router.put("/profile", auth, updateProfileValidation, userController.updateProfile);
 router.put("/reset-password", auth, changePasswordValidation, userController.resetPassword);
 router.post(
   "/reset-password/:userId/:token",
@@ -25,7 +19,7 @@ router.post(
   userController.resetForgotPassword
 );
 router.post("/forgot-password", userController.forgotPassword);
-router.get("/search/:searchParam", convertToLowercase, userController.searchUsers);
+router.get("/search/:searchParam", userController.searchUsers);
 // get a user
 // get all users
 // view a service provider

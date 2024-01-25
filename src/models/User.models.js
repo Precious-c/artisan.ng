@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       default: "user",
-      enum: ["user", "service_provider", "admin"],
+      // enum: ["user", "service_provider", "admin"],
     },
     // serviceHistory{
 
@@ -52,5 +52,9 @@ const userSchema = new mongoose.Schema(
     },
   }
 );
+
+// indexes
+// userSchema.index({ role: 1 });
+// userSchema.indexes()
 
 module.exports = mongoose.model("User", userSchema);
