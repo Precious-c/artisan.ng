@@ -98,29 +98,35 @@ async function resetForgotPassword(userId, token, newPassword) {
 async function searchServiceProviders(searchParams) {
   try {
     // get all service providers from the getServiceProviders function
-    const searchParams = "aad";
-    searchParams.forEach(searchParam => {
-    const searchResults = await ServiceProvider.find({
-      $or: [
-        { firstName: { $regex: searchParams, $options: "i" } },
-        { lastName: { $regex: searchParams, $options: "i" } },
-        { businessName: { $regex: searchParams, $options: "i" } },
-      ],
-    });
-
-    // })
-    console.log(searchResults);
-    // const users = await getServiceProviders();
-    // const searchResults = [];
-    // users.forEach((user) => {
-    //   searchParams.forEach((param) => {
-    //     if (param === user.firstName.toLowerCase() || param === user.lastName.toLowerCase())
-    //       searchResults.push(user);
-    //   });
+    // const searchParams = "aad";
+    // const searchResults = await ServiceProvider.find({
+    //   $or: [
+    //     { firstName: { $elemMatch: searchParams, $options: "i" } },
+    //     { lastName: { $regex: searchParams, $options: "i" } },
+    //     { businessName: { $regex: searchParams, $options: "i" } },
+    //   ],
     // });
-    // ;
-    // const user = await User.findById;
-    return searchResults;
+    // { scores: { $elemMatch: { $gt: 80, $lt: 90 } } }
+    // })
+    // console.log(searchResults);
+    const users = await getServiceProviders();
+    const searchResults = [];
+    users.forEach((user) => {
+      searchParams.forEach((param) => {
+        if (param === user.firstName.toLowerCase() || param === user.lastName.toLowerCase())
+          searchResults.push(user);
+        const busNameArray = user.businessName.split(" ");
+        busNameArray.forEach((item) => {
+          if (param === item.toLowerCase() || param === item.toLowerCase())
+            searchResults.push(user);
+        });
+      });
+    });
+    // remove dublicates
+    const uniqueSearchResults = searchResults.filter((value, index) => {
+      return searchResults.indexOf(value) === index;
+    });
+    return uniqueSearchResults;
   } catch (err) {
     throw err;
   }
