@@ -1,11 +1,10 @@
 const crypto = require("crypto");
-// const User = require("../models/User.models");
 const { encrypt, comparePassword } = require("./encryption.service");
 const Token = require("../models/Token.Model");
 const sendMail = require("../utils/helpers/sendMail");
-// const ServiceProvider = require("../models/serviceProvider.Model");
 const ServiceProvider = require("../models/ServiceProvider.Models");
 
+// return service provider by id
 async function getServiceProvider(userId) {
   return await ServiceProvider.findById(userId);
 }
@@ -15,6 +14,7 @@ async function getServiceProviders() {
   return await ServiceProvider.find();
 }
 
+// update a logged in service provider's profile
 async function updateProfile(userId, reqBody) {
   try {
     const user = await ServiceProvider.findByIdAndUpdate(
@@ -38,6 +38,7 @@ async function updateProfile(userId, reqBody) {
   }
 }
 
+// resets logged in user's password
 async function resetPassword(userId, reqBody) {
   try {
     const { currentPassword, newPassword } = reqBody;
@@ -55,6 +56,7 @@ async function resetPassword(userId, reqBody) {
   }
 }
 
+// generates and sends password reset link to email
 async function forgotPassword(userEmail) {
   try {
     const user = await ServiceProvider.findOne({ email: userEmail });
@@ -95,20 +97,9 @@ async function resetForgotPassword(userId, token, newPassword) {
   }
 }
 
+// searches service providers by name and business name
 async function searchServiceProviders(searchParams) {
   try {
-    // get all service providers from the getServiceProviders function
-    // const searchParams = "aad";
-    // const searchResults = await ServiceProvider.find({
-    //   $or: [
-    //     { firstName: { $elemMatch: searchParams, $options: "i" } },
-    //     { lastName: { $regex: searchParams, $options: "i" } },
-    //     { businessName: { $regex: searchParams, $options: "i" } },
-    //   ],
-    // });
-    // { scores: { $elemMatch: { $gt: 80, $lt: 90 } } }
-    // })
-    // console.log(searchResults);
     const users = await getServiceProviders();
     const searchResults = [];
     users.forEach((user) => {
@@ -132,6 +123,54 @@ async function searchServiceProviders(searchParams) {
   }
 }
 
+async function getServices(userId) {
+  try {
+    const user = await ServiceProvider.findById(userId);
+    return user.services;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function addService(userId, service) {
+  try {
+    user = await ServiceProvider.findById(userId);
+    if (user.services.includes(service)) throw new Error("Service already exists");
+    user.services.push(service);
+    await user.save();
+
+    return user.services;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function removeService(userId, service) {
+  try {
+    user = await ServiceProvider.findById(userId);
+    if (!user.services.includes(service)) throw new Error("Service doesn't exists");
+    const index = user.services.indexOf(service);
+    user.services.splice(index, 1);
+    await user.save();
+    console.log(user.services);
+    return user.services;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function getAvailability(userId) {
+  try {
+    const user = await ServiceProvider.findById(userId);
+    return user.availability;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
 module.exports = {
   getServiceProvider,
   updateProfile,
@@ -140,4 +179,8 @@ module.exports = {
   resetForgotPassword,
   getServiceProviders,
   searchServiceProviders,
+  getServices,
+  addService,
+  getAvailability,
+  removeService,
 };

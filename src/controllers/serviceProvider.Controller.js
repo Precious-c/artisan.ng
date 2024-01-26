@@ -139,6 +139,61 @@ async function searchServiceProviders(req, res) {
   }
 }
 
+// get service providers services
+async function getServices(req, res) {
+  try {
+    const userId = req.userId;
+    const services = await providerService.getServices(userId);
+    if (!services) return res.status(404).json({ success: false, msg: "No services found" });
+    return res.json({ success: true, services, noOfServices: services.length });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, msg: err.message });
+  }
+}
+
+// add a service
+async function addService(req, res) {
+  try {
+    const userId = req.userId;
+    const service = req.body.services;
+    const services = await providerService.addService(userId, service);
+
+    if (!services) return res.status(404).json({ success: false, msg: "No services found" });
+    return res.json({ success: true, services, noOfServices: services.length });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, msg: err.message });
+  }
+}
+
+// remove a service
+async function removeService(req, res) {
+  try {
+    const userId = req.userId;
+    const service = req.body.services;
+    const services = await providerService.removeService(userId, service);
+
+    if (!services) return res.status(404).json({ success: false, msg: "No services found" });
+    return res.json({ success: true, services, noOfServices: services.length });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, msg: err.message });
+  }
+}
+
+// get service providers availability
+async function getAvailability(req, res) {
+  try {
+    const userId = req.userId;
+    const availability = await providerService.getAvailability(userId);
+    return res.json({ success: true, availability });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, msg: err.message });
+  }
+}
+
 // delete a users accound
 
 module.exports = {
@@ -150,4 +205,8 @@ module.exports = {
   forgotPassword,
   resetForgotPassword,
   searchServiceProviders,
+  getServices,
+  getAvailability,
+  addService,
+  removeService,
 };
